@@ -4,8 +4,8 @@
 #include <math.h>
 
 HWND Hwnd;
-HPEN Highlight_Pen, Letter_Pen, BG_Pen, Brick_Red_Pen, Brick_Blue_Pen, Platform_Circle_Pen, Platform_Inner_Pen, Ball_Pen;
-HBRUSH Brick_Red_Brush, Brick_Blue_Brush, BG_Brush, Platform_Circle_Brush, Platform_Inner_Brush, Ball_Brush;
+HPEN Highlight_Pen, Letter_Pen, BG_Pen, Brick_Red_Pen, Brick_Blue_Pen, Platform_Circle_Pen, Platform_Inner_Pen, Ball_Pen, Border_Blue_Pen, Border_White_Pen;
+HBRUSH Brick_Red_Brush, Brick_Blue_Brush, BG_Brush, Platform_Circle_Brush, Platform_Inner_Brush, Ball_Brush, Border_Blue_Brush, Border_White_Brush;
 RECT Platform_Rect, Prev_Platform_Rect;
 RECT Level_Rect;
 RECT Ball_Rect, Prev_Ball_Rect;
@@ -99,6 +99,8 @@ void Init_Engine(HWND hWnd) {
     Create_Pen_Brush(7, 254, 118, Platform_Circle_Pen, Platform_Circle_Brush);
     Create_Pen_Brush(241, 254, 197, Platform_Inner_Pen, Platform_Inner_Brush);
     Create_Pen_Brush(111, 57, 255, Ball_Pen, Ball_Brush);
+    Create_Pen_Brush(85, 255, 255, Border_Blue_Pen, Border_Blue_Brush);
+    Create_Pen_Brush(255, 255, 255, Border_White_Pen, Border_White_Brush);
 
     Level_Rect.left = Level_X_Offset * Global_Scale;
     Level_Rect.top = Level_Y_Offset * Global_Scale;
@@ -306,6 +308,27 @@ void Draw_Ball(HDC hdc, RECT& paint_area) {
     Ellipse(hdc, Ball_Rect.left, Ball_Rect.top, Ball_Rect.right - 1, Ball_Rect.bottom - 1);
 }
 
+void Draw_Border(HDC hdc, RECT& paint_area)
+{
+    // Основная линия стенки
+    SelectObject(hdc, Border_Blue_Pen);
+    SelectObject(hdc, Border_Blue_Brush);
+
+    Rectangle(hdc, 1 * Global_Scale, 0 * Global_Scale, 4 * Global_Scale, 4 * Global_Scale);
+
+    // Белая часть стенки
+    SelectObject(hdc, Border_White_Pen);
+    SelectObject(hdc, Border_White_Brush);
+
+    Rectangle(hdc, 0 * Global_Scale, 0 * Global_Scale, 1 * Global_Scale, 4 * Global_Scale);
+
+    // Точка в стенке
+    SelectObject(hdc, BG_Pen);
+    SelectObject(hdc, BG_Brush);
+
+    Rectangle(hdc, 2 * Global_Scale, 1 * Global_Scale, 3 * Global_Scale, 2 * Global_Scale);
+}
+
 void Draw_Frame(HDC hdc, RECT& paint_area) {
     // Отрисовка экрана
 
@@ -324,6 +347,8 @@ void Draw_Frame(HDC hdc, RECT& paint_area) {
 
     if (IntersectRect(&intersection_rect, &paint_area, &Ball_Rect))
         Draw_Ball(hdc, paint_area);
+
+    Draw_Border(hdc, paint_area);
 }
 
 int On_Key_Down(EKey_Type key_type) {
