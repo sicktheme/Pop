@@ -156,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         HDC hdc = BeginPaint(hWnd, &ps);
         // TODO: Добавьте сюда любой код прорисовки, использующий HDC...
 
-        Engine.Draw_Frame(hdc, ps.rcPaint);
+        Engine.Redrew_Platform_Frame(hdc, ps.rcPaint);
 
         EndPaint(hWnd, &ps);
     }
